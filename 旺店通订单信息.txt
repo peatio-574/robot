@@ -1,0 +1,1 @@
+    pyautogui.hotkey('alt', 'tab')  # 切换到旺店通
