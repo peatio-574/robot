@@ -519,8 +519,9 @@ def get_count(order_id, order_info):
         order_info['title'] += '优衣库商品已下架'
         return order_info
     elif len(product_id) > 1:
-        order_info['title'] += '优衣库存在多个商品'
-        return order_info
+        product_id = product_id[1:]
+        # order_info['title'] += '优衣库存在多个商品'
+        # return order_info
     product_id = product_id[0]
     product_size_code = get_product_size_code(order_info["product"], product_id, order_info["color_id"], order_info["size"])
     if not product_size_code:
