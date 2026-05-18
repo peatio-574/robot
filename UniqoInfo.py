@@ -51,9 +51,11 @@ def deal_info(page_info):
             if not infos.get(good_no).get(color):
                 infos[good_no][color] = dict()
             if not infos.get(good_no).get(color).get(size):
-                infos[good_no][color][size] = [order['quantity'], price]
+                infos[good_no][color][size] = {price: order['quantity']}
+            if not infos.get(good_no).get(color).get(size).get(price):
+                infos[good_no][color][size][price] = order['quantity']
             else:
-                infos[good_no][color][size][0] += order['quantity']
+                infos[good_no][color][size][price] += order['quantity']
     return True
 
 def GetUniqoInfos():
@@ -106,9 +108,9 @@ def main():
             logger.info(f'当前货号：{goods_no}暂无数据')
             continue
         if len(text) == 1:
-            current_info = {k: {a:b[0] for a, b in v.items()} for k, v in current_info.items()}
+            current_info = {k: {a:sum(list(b.values())) for a, b in v.items()} for k, v in current_info.items()}
         elif len(text) == 2:
-            current_info = {k: {a: b[0] for a, b in v.items() if b[1][3:] == text[1]} for k, v in current_info.items()}
+            current_info = {k: {a: b[f'价格：{text[1]}'] for a, b in v.items() if f'价格：{text[1]}' in b.keys()} for k, v in current_info.items()}
 
         if not current_info:
             logger.info(f'{goods_no}货号暂无数据！！！')
