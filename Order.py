@@ -27,6 +27,13 @@ def get_order(flag='imgextra/i3'):
     if not result:  # 搜索按钮未加载出来
         return False
     time.sleep(5)
+
+    switch_ele = '//div[@class="driver-popover"]//button[@class="driver-popover-next-btn"]'
+    switch_count = Playwright_.page.locator(switch_ele).all()
+    if switch_count:
+        Playwright_.click(switch_ele)
+        time.sleep(3)
+
     # 点击待发货
     Playwright_.click('//div[@class="next-tabs-tab-inner" and contains(text(), "待发货")]')
     orders = dict()
