@@ -51,7 +51,8 @@ def deal_info(page_info):
             if not infos.get(good_no).get(color):
                 infos[good_no][color] = dict()
             if not infos.get(good_no).get(color).get(size):
-                infos[good_no][color][size] = {price: order['quantity']}
+                infos[good_no][color][size] = {}
+
             if not infos.get(good_no).get(color).get(size).get(price):
                 infos[good_no][color][size][price] = order['quantity']
             else:

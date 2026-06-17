@@ -70,7 +70,20 @@ def get_order_detail(order_id, prodcut_many=False, is_write=False):
     time.sleep(2)
     addr = '//span[@class="receive-address_value__Fmomy"]'
     addr = Playwright_.page.locator(addr).text_content()
-    logger.info(f'地址：{addr}')
+    logger.info(f'{order_id}订单地址：{addr}')
+
+    if '**' in addr:
+        logger.info('订单信息已隐藏，尝试再次获取订单信息')
+        Playwright_.click('//div[@role="switch"]/div[2]')
+        time.sleep(2)
+        look = Playwright_.wait_for_selector('//div[@role="switch" and @aria-checked="false"]/div[2]')
+        if look:
+            Playwright_.click('//div[@role="switch" and @aria-checked="false"]/div[2]')
+        time.sleep(2)
+        addr = '//span[@class="receive-address_value__Fmomy"]'
+        addr = Playwright_.page.locator(addr).text_content()
+        logger.info(f'订单号：{order_id}')
+        logger.info(f'地址：{addr}')
 
     count = '//tr[@class="order-item"]'
     count = len(Playwright_.page.locator(count).all())
@@ -701,6 +714,7 @@ def chang_status(order_id, expect_text=None):
     Playwright_.input('//input[@aria-label="搜索"]', str(order_id))
     # 点击搜索订单
     Playwright_.click('//span[text()="搜索订单"]')
+    time.sleep(5)
 
     # 点击编辑
     Playwright_.page.evaluate("window.scrollBy(0, 400)")  # 滚动
@@ -767,6 +781,10 @@ def main(controller, devive_ip, pay_way='1'):
                 continue
         order_info = order_info if order_info else get_order_detail(order, is_write=True)
         logger.info(f'\n{order}订单：{[i["title"] for i in order_info]}')
+
+        if '**' in order_info[0]['addr']:
+            logger.info(f'{order}订单地址含有**，请自行处理')
+            continue
         # 获取库存
         flag = 0
         info = list()
