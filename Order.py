@@ -239,15 +239,15 @@ def get_product_size_code(product, product_id, color_id, size):
         size = 'XL'
     else:
         size = str(size)
-    for i in eval(text)['rows']:
-        if isinstance(size, str):
-            if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) == size:
-                product_size_code = i['productId']
-                return product_size_code
-        else:
-            if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) in size:
-                product_size_code = i['productId']
-                return product_size_code
+    # for i in eval(text)['rows']:
+    #     if isinstance(size, str):
+    #         if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) == size:
+    #             product_size_code = i['productId']
+    #             return product_size_code
+    #     else:
+    #         if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) in size:
+    #             product_size_code = i['productId']
+    #             return product_size_code
     for i in eval(text)['rows']:
         color = i['styleText'] if isinstance(i['styleText'], str) else i['styleText'][0]
         color = color.split('/')[-1]

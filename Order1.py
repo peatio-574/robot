@@ -196,11 +196,9 @@ def get_product_id(product, color_id, color):
     }
     info = requests.post(url, headers=headers, data=json.dumps(params)).json()
     result = list()
-    new_product = []
     for i in info['resp'][1]:  # 多个结果
         # if i.get('code') and i.get('code') != str(product):
         #     continue
-        new_product.append(i.get('code'))
         styles = i['styleText']
         if isinstance(styles, str):
             if '/' in styles:
@@ -219,8 +217,7 @@ def get_product_id(product, color_id, color):
                 else:
                     if f'{color_id}{color}' in re.sub(' ', '', style):
                         result.append(i['productCode'])
-    new_product = list(set(new_product))[0]
-    return new_product, result
+    return result
 
 def get_product_size_code(product, product_id, color_id, size):
     """根据product_id、color_id、size获取product_size_code
@@ -244,15 +241,15 @@ def get_product_size_code(product, product_id, color_id, size):
         size = 'XL'
     else:
         size = str(size)
-    for i in eval(text)['rows']:
-        if isinstance(size, str):
-            if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) == size:
-                product_size_code = i['productId']
-                return product_size_code
-        else:
-            if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) in size:
-                product_size_code = i['productId']
-                return product_size_code
+    # for i in eval(text)['rows']:
+    #     if isinstance(size, str):
+    #         if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) == size:
+    #             product_size_code = i['productId']
+    #             return product_size_code
+    #     else:
+    #         if f'{product}/{color_id}' in i['styleText'] and re.sub(' ', '', i['size']) in size:
+    #             product_size_code = i['productId']
+    #             return product_size_code
     for i in eval(text)['rows']:
         color = i['styleText'] if isinstance(i['styleText'], str) else i['styleText'][0]
         color = color.split('/')[-1]
@@ -537,8 +534,7 @@ def get_count(order_id, order_info):
     if order_info["color_id"] == 'null':
         logger.info(f'订单:{order_id}，{order_info["title"]}无颜色编号')
         return order_info
-    new_product, product_id = get_product_id(order_info["product"], order_info["color_id"], order_info["color"])
-    order_info["product"]= new_product
+    product_id = get_product_id(order_info["product"], order_info["color_id"], order_info["color"])
     if not product_id:
         order_info['title'] += '优衣库商品已下架'
         return order_info
