@@ -33,8 +33,9 @@ def deal_info(page_info):
             status = order['status']
             if status in ['CANCELLED', 'CLOSED']:  # 无效订单
                 continue
-            good_no = order['summaryInfo']['code']
+            # good_no = order['summaryInfo']['code']
             color = order['productDetailInfo']['styleText'].replace(' ', '')
+            good_no = re.findall(r'\d{6}', color)[0] if re.findall(r'\d{6}', color) else order['summaryInfo']['code']
             color = re.findall(r'\d+[\u4e00-\u9fff]+', color)[0] if '色' in color else color
             size = order['productDetailInfo']['sizeText']
             price = '价格：' + order['productDetailInfo']['price']
