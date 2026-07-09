@@ -406,7 +406,7 @@ def add_addr(add_str):
     """新增地址，并返回对应addr_id
     addr_str：从千牛获取
     """
-    url = 'https://i.uniqlo.cn/p/hmall-ur-service/customer/address/insert/zh_CN'
+    url = 'https://i.uniqlo.cn/p/hmall-ur-service/v2/customer/address/insert'
     headers = {
         'user-agent': get_config_value('login', 'user-agent'),
         'content-type': 'application/json',
