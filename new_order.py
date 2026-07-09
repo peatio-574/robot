@@ -312,7 +312,7 @@ def get_product_count(product_id, product_size_code):
 
 def get_addr_list():
     """获取地址列表"""
-    url = 'https://i.uniqlo.cn/p/hmall-ur-service/customer/address/list/zh_CN'
+    url = 'https://i.uniqlo.cn/p/hmall-ur-service/v2/customer/address/list'
     headers = {
         'user-agent': get_config_value('login', 'user-agent'),
         'authorization': 'bearer ' + get_config_value('buy', 'Uniqlo_token'),
