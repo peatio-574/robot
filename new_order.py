@@ -921,7 +921,7 @@ def zfb_pay(controller, device_ip, server='127.0.0.1', rotation=3, finish=False)
     controller.ocr_text_and_click(server, device_ip, rotation, '完成', home=False)
 
     logger.info('点击返回')
-    controller.move_click(device_ip=device_ip, x_ratio=0.02, y_ratio=location_info['优衣库'][1] - 0.03, home=False)
+    controller.move_click(0.08304, 0.06057, home=False)
 
     if not finish:
         return True
