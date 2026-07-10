@@ -349,74 +349,32 @@ def deal_addr_str(add_str):
     # 姓名
     consignee = add_str[0]
     # 省份
-    cookie = get_config_value('buy', 'buy_cookie_')
-    if cookie:
-        Playwright_.add_cookie(eval(cookie))
-
-    Playwright_.goto('https://www.uniqlo.cn/data/zh_CN/provinces.json')
-    text = Playwright_.page.locator('//pre').text_content()
-    provinces = eval(text)
     provinceName = add_str[2].split(' ')[0]
-    provincecode = provinceName
-    for k, v in provinces.items():
-        if provinceName in v:
-            provincecode = k
-            break
     # 城市
-    Playwright_.goto(f'https://www.uniqlo.cn/data/zh_CN/city/{provincecode}.json')
-    text = Playwright_.page.locator('//pre').text_content()
-    citys = eval(text)
     cityName = add_str[2].split(' ')[1]
-    citycode = cityName
-    for k, v in citys.items():
-        if v == cityName:
-            citycode = k
-            break
     # 区县
-    Playwright_.goto(f'https://www.uniqlo.cn/data/zh_CN/district/{citycode}.json')
-    text = Playwright_.page.locator('//pre').text_content()
-    districts = eval(text)
     districtName = add_str[2].split(' ')[2]
-    district = list(districts.keys())[0]
-    for k, v in districts.items():
-        if v == districtName:
-            district = k
-            break
-        elif '其他' in v:
-            district = k
-
-    params = {
-        "address": address,
-        "consignee": consignee,
-        "nationalCode": "+86",
-        "mobilenumber": mobilenumber,
-        "zipcode": "",
-        "state": provincecode,
-        "city": citycode,
-        "district": district,
-        "fixednumber": "",
-        "provinceName": provinceName,
-        "cityName": cityName,
-        "districtName": districtName,
-        "areaCode": ""
-    }
-    return params
+    return [provinceName, cityName, districtName, address, mobilenumber, consignee]
 
 def add_addr(add_str):
     """新增地址，并返回对应addr_id
     addr_str：从千牛获取
     """
-    url = 'https://i.uniqlo.cn/p/hmall-ur-service/v2/customer/address/insert'
-    headers = {
-        'user-agent': get_config_value('login', 'user-agent'),
-        'content-type': 'application/json',
-        'authorization': 'bearer ' + get_config_value('buy', 'Uniqlo_token'),
-        'cookie': get_config_value('buy', 'buy_cookie')
-    }
-    params = deal_addr_str(add_str)
-    response = requests.post(url, headers=headers, data=json.dumps(params)).json()
-    addr_id = response.get('resp')[0]['addressId']
-    return addr_id
+    provinceName, cityName, districtName, address, mobilenumber, consignee = deal_addr_str(add_str)
+    buy_login()
+    time.sleep(random.randint(5, 10))
+    Playwright_.goto('https://www.uniqlo.cn/account/address.html')
+    Playwright_.click('//button[text()="新增收货地址"]')
+    Playwright_.click('(//i[@class="icon "])[1]')
+    Playwright_.click(f'//li[contains(text(),"{provinceName}")]')
+    Playwright_.click('(//i[@class="icon "])[2]')
+    Playwright_.click(f'//li[contains(text(),"{cityName}")]')
+    Playwright_.page.locator('//input[@name="consignee"]').fill(consignee)
+    Playwright_.page.locator('//input[@name="address"]').fill(address)
+    Playwright_.page.locator('//input[@name="mobilenumber"]').fill(mobilenumber)
+    Playwright_.click('//button[@type="submit"]')
+    time.sleep(random.randint(2, 4))
+    return get_addr_list()[0]
 
 def get_purchase_list():
     """获取购物车列表"""
