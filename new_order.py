@@ -812,7 +812,7 @@ def main(controller, devive_ip, is_ship):
 
             expect_text += single['title'] + '已下单\n'
             logger.info(f'{order}订单已加入购物车:{single["title"]}')
-        if is_ship == '1':
+        if is_ship == '0':
             add_speecial_product()
         submit()
         # 支付
@@ -920,22 +920,11 @@ def zfb_pay(controller, device_ip, server='127.0.0.1', rotation=3, finish=False)
     logger.info('点击完成')
     controller.ocr_text_and_click(server, device_ip, rotation, '完成', home=False)
 
-    logger.info('切换至微信-优衣库小程序')
-    controller.drag(device_ip=device_ip, start_x=0.46301, start_y=0.99721, end_x=0.46301, end_y=0.72421)
-    tmp_location = controller.ocr_get_text_location(server, device_ip, rotation, '优衣库UN', home=True)
-    controller.move_click(device_ip=device_ip, x_ratio=tmp_location[0], y_ratio=tmp_location[1] + 0.2, home=True)
+    logger.info('点击返回')
+    controller.move_click(device_ip=device_ip, x_ratio=0.02, y_ratio=location_info['优衣库'][1] - 0.03, home=False)
 
     if not finish:
         return True
-    logger.info('点击小程序右上方返回')
-    controller.move_click(device_ip=device_ip, x_ratio=0.97, y_ratio=location_info['优衣库'][1] - 0.01, home=False)
-
-    logger.info('点击对话框左上方返回')
-    controller.move_click(device_ip=device_ip, x_ratio=0.02, y_ratio=location_info['优衣库'][1] - 0.03, home=True)
-
-    logger.info('点击对话框左上方返回')
-    controller.move_click(device_ip=device_ip, x_ratio=0.02, y_ratio=location_info['优衣库'][1] - 0.03, home=False)
-
     location_info = dict()
 
     return True
